@@ -22,26 +22,30 @@ public class BinarySortTree<T extends Comparable<T>> extends BinaryTree<T> {
             return;
         }
 
-        Node<T> parent;
-        Node<T> index = root;
-        while (index != null) {
-            parent = index;
-            int compare = index.getValue().compareTo(value);
-            if (compare > 0) {
-                index = index.getLeft();
-            } else {
-                index = index.getRight();
-            }
+        insertNode(root, value);
+    }
 
-            if (index == null) {
-                node.setParent(parent);
-                if (compare > 0) {
-                    parent.setLeft(node);
-                } else {
-                    parent.setRight(node);
-                }
-            }
+    /**
+     * 插入节点
+     *
+     * @param node
+     * @param value
+     * @return
+     */
+    public Node<T> insertNode(Node<T> node, T value) {
+        if (node == null) {
+            node = new Node<>(value);
+            return node;
         }
+
+        int compare = node.getValue().compareTo(value);
+        if (compare > 0) {
+            node.setLeft(insertNode(node.getLeft(), value));
+        } else {
+            node.setRight(insertNode(node.getRight(), value));
+        }
+
+        return node;
     }
 
     /**
@@ -66,15 +70,17 @@ public class BinarySortTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @return
      */
     private Node<T> searchNode(Node<T> node, T value) {
+        if (node == null) {
+            return null;
+        }
+
         int compare = node.getValue().compareTo(value);
-        if (compare == 0) {
-            return node;
-        } else if (compare > 0) {
-            // 节点大于要找的值，则从左树中继续查找
+        if (compare > 0) {
             return searchNode(node.getLeft(), value);
-        } else {
-            // 节点小于等于要查找的值，则从左树中继续查找
+        } else if (compare < 0) {
             return searchNode(node.getRight(), value);
+        } else {
+            return node;
         }
     }
 
@@ -85,65 +91,49 @@ public class BinarySortTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @return
      */
     public Node<T> deleteNode(T value) {
-        Node<T> delete = searchNode(value);
-        if (delete == null) {
+        if (root == null) {
             return null;
         }
-        if (root == delete) {
-            root = null;
-            return delete;
-        }
 
-        if (delete.getLeft() != null && delete.getRight() != null) {
-            return deleteNodeWithFullChild(delete);
-        } else {
-            return deleteNodeWithoutFullChild(delete);
-        }
+        return deleteNode(root, value);
     }
 
     /**
-     * 删除只有一个子节点，或者没有子节点的节点
+     * 删除节点
      *
-     * @param delete
+     * @param node
+     * @param value
      * @return
      */
-    private Node<T> deleteNodeWithoutFullChild(Node<T> delete) {
-        Node<T> parent = delete.getParent();
-        Node<T> newChild = delete.getLeft() == null ? delete.getRight() : delete.getLeft();
-        if (parent.getLeft() == delete) {
-            parent.setLeft(newChild);
-        } else {
-            parent.setRight(newChild);
+    public Node<T> deleteNode(Node<T> node, T value) {
+        if (node == null) {
+            return null;
         }
 
-        return delete;
-    }
-
-    /**
-     * 删除有两个子节点的节点
-     *
-     * @param delete
-     * @return
-     */
-    private Node<T> deleteNodeWithFullChild(Node<T> delete) {
-        // 找到后继节点
-        Node<T> newChild = findMinNodeInTree(delete.getRight());
-        // 因为后继节点肯定没有左子节点，所以直接调用删除函数删除后继节点
-        deleteNodeWithoutFullChild(newChild);
-
-        Node<T> parent = delete.getParent();
-        // 更新新节点的属性
-        newChild.setLeft(delete.getLeft());
-        newChild.setRight(delete.getRight());
-        newChild.setParent(parent);
-        // 更新父节点的子节点为后继节点
-        if (parent.getLeft() == delete) {
-            parent.setLeft(newChild);
+        int compare = node.getValue().compareTo(value);
+        if (compare > 0) {
+            // 当前值比待删除的值要大，则从左子树查找
+            node.setLeft(deleteNode(node.getLeft(), value));
+        } else if (compare < 0) {
+            // 当前值比待删除的值要小，则从右子树查找
+            node.setRight(deleteNode(node.getRight(), value));
         } else {
-            parent.setRight(newChild);
+            // 找到要删除的值了
+            if (node.getLeft() == null || node.getRight() == null) {
+                // 有0个或者1个孩子
+                node = node.getLeft() == null ? node.getRight() : node.getLeft();
+            } else {
+                // 有两个孩子
+                // 找到后继节点（右树中最小的那个）
+                Node<T> minNode = findMinNodeInTree(node.getRight());
+                // 删除后继节点
+                deleteNode(node, minNode.getValue());
+                // 设置当前节点的值为后继节点的值
+                node.setValue(minNode.getValue());
+            }
         }
 
-        return null;
+        return node;
     }
 
     /**

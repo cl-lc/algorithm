@@ -8,7 +8,6 @@ public class Node<T extends Comparable<T>> {
     private T value;
     private Node<T> left;
     private Node<T> right;
-    private Node<T> parent;
 
     public Node(T value) {
         this.value = value;
@@ -36,13 +35,5 @@ public class Node<T extends Comparable<T>> {
 
     public void setRight(Node<T> right) {
         this.right = right;
-    }
-
-    public Node<T> getParent() {
-        return parent;
-    }
-
-    public void setParent(Node<T> parent) {
-        this.parent = parent;
     }
 }
