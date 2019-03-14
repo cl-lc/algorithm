@@ -44,6 +44,7 @@ public class BinarySortTree<T extends Comparable<T>> extends BinaryTree<T> {
         } else {
             node.setRight(insertNode(node.getRight(), value));
         }
+        node.setHeight(Math.max(getHeight(node.getLeft()), getHeight(node.getRight())) + 1);
 
         return node;
     }
@@ -131,6 +132,11 @@ public class BinarySortTree<T extends Comparable<T>> extends BinaryTree<T> {
                 // 设置当前节点的值为后继节点的值
                 node.setValue(minNode.getValue());
             }
+        }
+
+        // node如果是个叶子节点，则删除之后为null
+        if (node != null) {
+            node.setHeight(Math.max(getHeight(node.getLeft()), getHeight(node.getRight())) + 1);
         }
 
         return node;
