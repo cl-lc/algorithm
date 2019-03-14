@@ -1,53 +1,61 @@
 package net.cllc.structure.tree;
 
+import net.cllc.structure.tree.base.BinaryTree;
 import net.cllc.structure.tree.base.Node;
 
 /**
  * @author chenlei
  * @date 2019-03-13
  */
-public class BinarySortTreeUtil {
-
+public class BinarySortTree<T extends Comparable<T>> extends BinaryTree<T> {
     /**
      * 插入节点
      *
-     * 因为Node数据结构中有个parent，所以这里用while循环不用递归
-     * 用递归的话需要函数多一个parent参数
-     *
-     * @param node
      * @param value
-     * @param <T>
      * @return
      */
-    public static <T extends Comparable<T>> Node<T> insertNode(Node<T> node, T value) {
-        Node<T> newNode = new Node<>();
-        newNode.setValue(value);
+    public void insertNode(T value) {
+        Node<T> node = new Node<>(value);
 
-        if (node == null) {
-            return newNode;
+        if (root == null) {
+            root = node;
+            return;
         }
 
         Node<T> parent;
-        while (node != null) {
-            int compare = node.getValue().compareTo(value);
-            parent = node;
+        Node<T> index = root;
+        while (index != null) {
+            parent = index;
+            int compare = index.getValue().compareTo(value);
             if (compare > 0) {
-                node = node.getLeft();
+                index = index.getLeft();
             } else {
-                node = node.getRight();
+                index = index.getRight();
             }
 
-            if (node == null) {
-                newNode.setParent(parent);
+            if (index == null) {
+                node.setParent(parent);
                 if (compare > 0) {
-                    parent.setLeft(newNode);
+                    parent.setLeft(node);
                 } else {
-                    parent.setRight(newNode);
+                    parent.setRight(node);
                 }
             }
         }
+    }
 
-        return newNode;
+    /**
+     * 查找节点
+     *
+     * @param value
+     * @return
+     */
+    public Node<T> searchNode(T value) {
+        if (root == null) {
+            return null;
+        }
+
+        return searchNode(root, value);
     }
 
     /**
@@ -55,14 +63,9 @@ public class BinarySortTreeUtil {
      *
      * @param node
      * @param value
-     * @param <T>
      * @return
      */
-    public static <T extends Comparable<T>> Node<T> searchNode(Node<T> node, T value) {
-        if (node == null) {
-            return null;
-        }
-
+    private Node<T> searchNode(Node<T> node, T value) {
         int compare = node.getValue().compareTo(value);
         if (compare == 0) {
             return node;
@@ -77,17 +80,17 @@ public class BinarySortTreeUtil {
 
     /**
      * 删除节点
-     * @param node
+     *
      * @param value
-     * @param <T>
      * @return
      */
-    public static <T extends Comparable<T>> Node<T> deleteNode(Node<T> node, T value) {
-        Node<T> delete = searchNode(node, value);
+    public Node<T> deleteNode(T value) {
+        Node<T> delete = searchNode(value);
         if (delete == null) {
             return null;
         }
-        if (node == delete) {
+        if (root == delete) {
+            root = null;
             return delete;
         }
 
@@ -102,16 +105,10 @@ public class BinarySortTreeUtil {
      * 删除只有一个子节点，或者没有子节点的节点
      *
      * @param delete
-     * @param <T>
      * @return
      */
-    private static <T extends Comparable<T>> Node<T> deleteNodeWithoutFullChild(Node<T> delete) {
+    private Node<T> deleteNodeWithoutFullChild(Node<T> delete) {
         Node<T> parent = delete.getParent();
-        if (parent == null) {
-            // root节点
-            return delete;
-        }
-
         Node<T> newChild = delete.getLeft() == null ? delete.getRight() : delete.getLeft();
         if (parent.getLeft() == delete) {
             parent.setLeft(newChild);
@@ -126,21 +123,15 @@ public class BinarySortTreeUtil {
      * 删除有两个子节点的节点
      *
      * @param delete
-     * @param <T>
      * @return
      */
-    private static <T extends Comparable<T>> Node<T> deleteNodeWithFullChild(Node<T> delete) {
-        Node<T> parent = delete.getParent();
-        if (parent == null) {
-            // root节点
-            return delete;
-        }
-
+    private Node<T> deleteNodeWithFullChild(Node<T> delete) {
         // 找到后继节点
         Node<T> newChild = findMinNodeInTree(delete.getRight());
         // 因为后继节点肯定没有左子节点，所以直接调用删除函数删除后继节点
         deleteNodeWithoutFullChild(newChild);
 
+        Node<T> parent = delete.getParent();
         // 更新新节点的属性
         newChild.setLeft(delete.getLeft());
         newChild.setRight(delete.getRight());
@@ -159,10 +150,9 @@ public class BinarySortTreeUtil {
      * 找到一棵树中，value最小的那个节点
      *
      * @param node
-     * @param <T>
      * @return
      */
-    private static <T extends Comparable<T>> Node<T> findMinNodeInTree(Node<T> node) {
+    private Node<T> findMinNodeInTree(Node<T> node) {
         if (node.getLeft() != null) {
             return findMinNodeInTree(node.getLeft());
         }

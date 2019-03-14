@@ -10,21 +10,8 @@ public class Node<T extends Comparable<T>> {
     private Node<T> right;
     private Node<T> parent;
 
-    /**
-     * 中序打印一棵树
-     */
-    public void printLDR() {
-        printLDR(this);
-    }
-
-    private void printLDR(Node node) {
-        if (node == null) {
-            return;
-        }
-
-        printLDR(node.getLeft());
-        System.out.println(node.getValue());
-        printLDR(node.getRight());
+    public Node(T value) {
+        this.value = value;
     }
 
     public T getValue() {
