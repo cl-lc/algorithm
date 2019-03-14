@@ -7,12 +7,12 @@ import net.cllc.structure.tree.base.Node;
  * @author chenlei
  * @date 2019-03-13
  */
-public class BinarySortTreeTest {
+public class BinarySearchTreeTest {
     private static final int[] INPUT = new int[]{50, 30, 80, 20, 35, 34, 32, 40, 70, 75, 99};
 
     public static void main(String[] args) {
         // 初始化
-        BinarySortTree<Integer> tree = new BinarySortTree<>();
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
         for (int i : INPUT) {
             tree.insertNode(i);
         }

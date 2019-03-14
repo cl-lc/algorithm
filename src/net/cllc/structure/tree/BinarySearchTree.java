@@ -7,7 +7,7 @@ import net.cllc.structure.tree.base.Node;
  * @author chenlei
  * @date 2019-03-13
  */
-public class BinarySortTree<T extends Comparable<T>> extends BinaryTree<T> {
+public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
     /**
      * 插入节点
      *
@@ -32,7 +32,7 @@ public class BinarySortTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param value
      * @return
      */
-    public Node<T> insertNode(Node<T> node, T value) {
+    private Node<T> insertNode(Node<T> node, T value) {
         if (node == null) {
             node = new Node<>(value);
             return node;
@@ -106,7 +106,7 @@ public class BinarySortTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param value
      * @return
      */
-    public Node<T> deleteNode(Node<T> node, T value) {
+    private Node<T> deleteNode(Node<T> node, T value) {
         if (node == null) {
             return null;
         }
