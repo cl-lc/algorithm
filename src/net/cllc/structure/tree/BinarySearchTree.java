@@ -15,14 +15,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @return
      */
     public void insertNode(T value) {
-        Node<T> node = new Node<>(value);
-
-        if (root == null) {
-            root = node;
-            return;
-        }
-
-        insertNode(root, value);
+        root = insertNode(root, value);
     }
 
     /**
@@ -32,7 +25,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param value
      * @return
      */
-    private Node<T> insertNode(Node<T> node, T value) {
+    protected Node<T> insertNode(Node<T> node, T value) {
         if (node == null) {
             node = new Node<>(value);
             return node;
@@ -44,7 +37,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         } else {
             node.setRight(insertNode(node.getRight(), value));
         }
-        node.setHeight(Math.max(getHeight(node.getLeft()), getHeight(node.getRight())) + 1);
+        updateHeight(node);
 
         return node;
     }
@@ -91,12 +84,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param value
      * @return
      */
-    public Node<T> deleteNode(T value) {
-        if (root == null) {
-            return null;
-        }
-
-        return deleteNode(root, value);
+    public void deleteNode(T value) {
+        root = deleteNode(root, value);
     }
 
     /**
@@ -106,7 +95,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param value
      * @return
      */
-    private Node<T> deleteNode(Node<T> node, T value) {
+    protected Node<T> deleteNode(Node<T> node, T value) {
         if (node == null) {
             return null;
         }
@@ -134,10 +123,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             }
         }
 
-        // node如果是个叶子节点，则删除之后为null
-        if (node != null) {
-            node.setHeight(Math.max(getHeight(node.getLeft()), getHeight(node.getRight())) + 1);
-        }
+        updateHeight(node);
 
         return node;
     }

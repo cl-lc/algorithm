@@ -41,4 +41,17 @@ public class BinaryTree<T extends Comparable<T>> {
         }
         return node.getHeight();
     }
+
+    /**
+     * 更新节点高度
+     *
+     * @param node
+     */
+    protected void updateHeight(Node<T> node) {
+        if (node == null) {
+            return;
+        }
+
+        node.setHeight(Math.max(getHeight(node.getLeft()), getHeight(node.getRight())) + 1);
+    }
 }
