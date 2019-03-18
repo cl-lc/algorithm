@@ -78,16 +78,16 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
         if (balanceFactor > 0) {
             // 注意这里是>=
             if (subBalanceFactor >= 0) {
-                return RightRotate(node);
+                return rightRotate(node);
             } else {
-                return LRRotate(node);
+                return lrRotate(node);
             }
         } else {
             // 注意这里是<=
             if (subBalanceFactor <= 0) {
-                return LeftRotate(node);
+                return leftRotate(node);
             } else {
-                return RLRotate(node);
+                return rlRotate(node);
             }
         }
     }
@@ -113,7 +113,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
      * @param node
      * @return 返回新的根节点
      */
-    private Node<V> RightRotate(Node<V> node) {
+    private Node<V> rightRotate(Node<V> node) {
         Node<V> parent = node.getParent();
         Node<V> a = node.getLeft();
         Node<V> b = a.getRight();
@@ -141,7 +141,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
      * @param node
      * @return 返回新的根节点
      */
-    private Node<V> LeftRotate(Node<V> node) {
+    private Node<V> leftRotate(Node<V> node) {
         Node<V> parent = node.getParent();
         Node<V> a = node.getRight();
         Node<V> b = a.getLeft();
@@ -169,12 +169,14 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
      * @param node
      * @return 返回新的根节点
      */
-    private Node<V> LRRotate(Node<V> node) {
-        node.setLeft(LeftRotate(node.getLeft()));
+    private Node<V> lrRotate(Node<V> node) {
+        // 先左旋一次左子节点
+        node.setLeft(leftRotate(node.getLeft()));
         node.getLeft().setParent(node);
         updateHeight(node);
 
-        return RightRotate(node);
+        // 再右旋一次
+        return rightRotate(node);
     }
 
     /**
@@ -183,12 +185,13 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
      * @param node
      * @return 返回新的根节点
      */
-    private Node<V> RLRotate(Node<V> node) {
-        // 先右旋一次
-        node.setRight(RightRotate(node.getRight()));
+    private Node<V> rlRotate(Node<V> node) {
+        // 先右旋一次右子节点
+        node.setRight(rightRotate(node.getRight()));
         node.getRight().setParent(node);
         updateHeight(node);
 
-        return LeftRotate(node);
+        // 再左旋一次
+        return leftRotate(node);
     }
 }

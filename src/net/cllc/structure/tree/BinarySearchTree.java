@@ -32,14 +32,10 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
         int compare = node.getValue().compareTo(value);
         if (compare > 0) {
             node.setLeft(insertNode(node.getLeft(), value));
-            if (node.getLeft() != null) {
-                node.getLeft().setParent(node);
-            }
+            node.getLeft().setParent(node);
         } else {
             node.setRight(insertNode(node.getRight(), value));
-            if (node.getRight() != null) {
-                node.getRight().setParent(node);
-            }
+            node.getRight().setParent(node);
         }
         updateHeight(node);
 
