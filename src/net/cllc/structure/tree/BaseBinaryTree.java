@@ -1,11 +1,13 @@
-package net.cllc.structure.tree.base;
+package net.cllc.structure.tree;
+
+import net.cllc.structure.tree.node.Node;
 
 /**
  * @author chenlei
  * @date 2019-03-14
  */
-public class BinaryTree<T extends Comparable<T>> {
-    protected Node<T> root;
+public abstract class BaseBinaryTree<V extends Comparable<V>> {
+    protected Node<V> root;
 
     /**
      * 中序打印
@@ -19,7 +21,7 @@ public class BinaryTree<T extends Comparable<T>> {
      *
      * @param node
      */
-    private void printLDR(Node node) {
+    private void printLDR(Node<V> node) {
         if (node == null) {
             return;
         }
@@ -35,7 +37,7 @@ public class BinaryTree<T extends Comparable<T>> {
      * @param node
      * @return
      */
-    protected int getHeight(Node<T> node) {
+    protected int getHeight(Node<V> node) {
         if (node == null) {
             return -1;
         }
@@ -47,7 +49,7 @@ public class BinaryTree<T extends Comparable<T>> {
      *
      * @param node
      */
-    protected void updateHeight(Node<T> node) {
+    protected void updateHeight(Node<V> node) {
         if (node == null) {
             return;
         }

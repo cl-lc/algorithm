@@ -1,12 +1,12 @@
 package net.cllc.structure.tree;
 
-import net.cllc.structure.tree.base.Node;
+import net.cllc.structure.tree.node.Node;
 
 /**
  * @author chenlei
  * @date 2019-03-13
  */
-public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
+public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
     private static final int BALANCE_FACTOR = 2;
 
     /**
@@ -17,7 +17,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * @return
      */
     @Override
-    protected Node<T> insertNode(Node<T> node, T value) {
+    protected Node<V> insertNode(Node<V> node, V value) {
         // 调用父类的插入节点方法
         node = super.insertNode(node, value);
 
@@ -37,7 +37,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * @return
      */
     @Override
-    protected Node<T> deleteNode(Node<T> node, T value) {
+    protected Node<V> deleteNode(Node<V> node, V value) {
         // 调用父类的删除节点方法
         node = super.deleteNode(node, value);
 
@@ -55,7 +55,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * @param node
      * @return
      */
-    private boolean needRotate(Node<T> node) {
+    private boolean needRotate(Node<V> node) {
         int balanceFactor = getBalanceFactor(node);
         return Math.abs(balanceFactor) == BALANCE_FACTOR;
     }
@@ -66,7 +66,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * @param node
      * @return
      */
-    private Node<T> rotate(Node<T> node) {
+    private Node<V> rotate(Node<V> node) {
         int balanceFactor = getBalanceFactor(node);
         int subBalanceFactor;
         if (balanceFactor > 0) {
@@ -78,14 +78,14 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         if (balanceFactor > 0) {
             // 注意这里是>=
             if (subBalanceFactor >= 0) {
-                return LLRotate(node);
+                return RightRotate(node);
             } else {
                 return LRRotate(node);
             }
         } else {
             // 注意这里是<=
             if (subBalanceFactor <= 0) {
-                return RRRotate(node);
+                return LeftRotate(node);
             } else {
                 return RLRotate(node);
             }
@@ -99,7 +99,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * @param node
      * @return
      */
-    private int getBalanceFactor(Node<T> node) {
+    private int getBalanceFactor(Node<V> node) {
         if (node == null) {
             return 0;
         }
@@ -108,43 +108,59 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
     }
 
     /**
-     * LL旋转
+     * 右旋
      *
      * @param node
      * @return 返回新的根节点
      */
-    private Node<T> LLRotate(Node<T> node) {
-        Node<T> left = node.getLeft();
-        Node<T> right = left.getRight();
+    private Node<V> RightRotate(Node<V> node) {
+        Node<V> parent = node.getParent();
+        Node<V> a = node.getLeft();
+        Node<V> b = a.getRight();
 
-        left.setRight(node);
-        node.setLeft(right);
+        a.setRight(node);
+        a.setParent(parent);
+
+        if (b != null) {
+            b.setParent(node);
+        }
+
+        node.setLeft(b);
+        node.setParent(a);
 
         // 更新两个节点的高度
         updateHeight(node);
-        updateHeight(left);
+        updateHeight(a);
 
-        return left;
+        return a;
     }
 
     /**
-     * RR旋转
+     * 左旋
      *
      * @param node
      * @return 返回新的根节点
      */
-    private Node<T> RRRotate(Node<T> node) {
-        Node<T> right = node.getRight();
-        Node<T> left = right.getLeft();
+    private Node<V> LeftRotate(Node<V> node) {
+        Node<V> parent = node.getParent();
+        Node<V> a = node.getRight();
+        Node<V> b = a.getLeft();
 
-        right.setLeft(node);
-        node.setRight(left);
+        a.setLeft(node);
+        a.setParent(parent);
+
+        if (b != null) {
+            b.setParent(node);
+        }
+
+        node.setRight(b);
+        node.setParent(a);
 
         // 更新两个节点的高度
         updateHeight(node);
-        updateHeight(right);
+        updateHeight(a);
 
-        return right;
+        return a;
     }
 
     /**
@@ -153,20 +169,12 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * @param node
      * @return 返回新的根节点
      */
-    private Node<T> LRRotate(Node<T> node) {
-        // 先左旋一次
-        Node<T> left = node.getLeft();
-        Node<T> right = left.getRight();
+    private Node<V> LRRotate(Node<V> node) {
+        node.setLeft(LeftRotate(node.getLeft()));
+        node.getLeft().setParent(node);
+        updateHeight(node);
 
-        node.setLeft(right);
-        left.setRight(right.getLeft());
-        right.setLeft(left);
-
-        // 更新两个节点的高度
-        updateHeight(left);
-        updateHeight(right);
-
-        return LLRotate(node);
+        return RightRotate(node);
     }
 
     /**
@@ -175,19 +183,12 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * @param node
      * @return 返回新的根节点
      */
-    private Node<T> RLRotate(Node<T> node) {
+    private Node<V> RLRotate(Node<V> node) {
         // 先右旋一次
-        Node<T> right = node.getRight();
-        Node<T> left = right.getLeft();
+        node.setRight(RightRotate(node.getRight()));
+        node.getRight().setParent(node);
+        updateHeight(node);
 
-        node.setRight(left);
-        right.setLeft(left.getRight());
-        left.setRight(right);
-
-        // 更新两个节点的高度
-        updateHeight(right);
-        updateHeight(left);
-
-        return RRRotate(node);
+        return LeftRotate(node);
     }
 }

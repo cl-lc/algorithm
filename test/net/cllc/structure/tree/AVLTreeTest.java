@@ -1,6 +1,6 @@
 package net.cllc.structure.tree;
 
-import net.cllc.structure.tree.base.Node;
+import net.cllc.structure.tree.node.Node;
 
 
 /**
@@ -21,21 +21,25 @@ public class AVLTreeTest {
         // 查找
         Node<Integer> node = tree.searchNode(6);
         assert node.getHeight() == 1;
+        assert node.getParent().getValue() == 4;
         assert node.getLeft().getValue().equals(5);
         assert node.getRight() == null;
 
         node = tree.searchNode(4);
         assert node.getHeight() == 2;
+        assert node.getParent().getValue() == 7;
         assert node.getLeft().getValue().equals(2);
         assert node.getRight().getValue().equals(6);
 
         node = tree.searchNode(13);
         assert node.getHeight() == 3;
+        assert node.getParent().getValue() == 7;
         assert node.getLeft().getValue().equals(11);
         assert node.getRight().getValue().equals(15);
 
         node = tree.searchNode(15);
         assert node.getHeight() == 1;
+        assert node.getParent().getValue() == 13;
         assert node.getLeft().getValue().equals(14);
         assert node.getRight().getValue().equals(16);
 
@@ -45,11 +49,13 @@ public class AVLTreeTest {
         tree.deleteNode(1);
         node = tree.searchNode(11);
         assert node.getHeight() == 3;
+        assert node.getParent() == null;
         assert node.getLeft().getValue().equals(7);
         assert node.getRight().getValue().equals(13);
 
         node = tree.searchNode(7);
         assert node.getHeight() == 2;
+        assert node.getParent().getValue() == 11;
         assert node.getLeft().getValue().equals(4);
         assert node.getRight().getValue().equals(9);
         tree.printLDR();
@@ -62,11 +68,13 @@ public class AVLTreeTest {
 
         node = tree.searchNode(11);
         assert node.getHeight() == 2;
+        assert node.getParent().getValue() == 7;
         assert node.getLeft().getValue().equals(9);
         assert node.getRight().getValue().equals(13);
 
         node = tree.searchNode(7);
         assert node.getHeight() == 3;
+        assert node.getParent() == null;
         assert node.getLeft().getValue().equals(4);
         assert node.getRight().getValue().equals(11);
         tree.printLDR();

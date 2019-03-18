@@ -1,20 +1,19 @@
 package net.cllc.structure.tree;
 
-import net.cllc.structure.tree.base.BinaryTree;
-import net.cllc.structure.tree.base.Node;
+import net.cllc.structure.tree.node.Node;
 
 /**
  * @author chenlei
  * @date 2019-03-13
  */
-public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
+public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V> {
     /**
      * 插入节点
      *
      * @param value
      * @return
      */
-    public void insertNode(T value) {
+    public void insertNode(V value) {
         root = insertNode(root, value);
     }
 
@@ -25,17 +24,22 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param value
      * @return
      */
-    protected Node<T> insertNode(Node<T> node, T value) {
+    protected Node<V> insertNode(Node<V> node, V value) {
         if (node == null) {
-            node = new Node<>(value);
-            return node;
+            return new Node<>(value);
         }
 
         int compare = node.getValue().compareTo(value);
         if (compare > 0) {
             node.setLeft(insertNode(node.getLeft(), value));
+            if (node.getLeft() != null) {
+                node.getLeft().setParent(node);
+            }
         } else {
             node.setRight(insertNode(node.getRight(), value));
+            if (node.getRight() != null) {
+                node.getRight().setParent(node);
+            }
         }
         updateHeight(node);
 
@@ -48,7 +52,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param value
      * @return
      */
-    public Node<T> searchNode(T value) {
+    public Node<V> searchNode(V value) {
         if (root == null) {
             return null;
         }
@@ -63,7 +67,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param value
      * @return
      */
-    private Node<T> searchNode(Node<T> node, T value) {
+    private Node<V> searchNode(Node<V> node, V value) {
         if (node == null) {
             return null;
         }
@@ -84,7 +88,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param value
      * @return
      */
-    public void deleteNode(T value) {
+    public void deleteNode(V value) {
         root = deleteNode(root, value);
     }
 
@@ -95,7 +99,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param value
      * @return
      */
-    protected Node<T> deleteNode(Node<T> node, T value) {
+    protected Node<V> deleteNode(Node<V> node, V value) {
         if (node == null) {
             return null;
         }
@@ -104,9 +108,15 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
         if (compare > 0) {
             // 当前值比待删除的值要大，则从左子树查找
             node.setLeft(deleteNode(node.getLeft(), value));
+            if (node.getLeft() != null) {
+                node.getLeft().setParent(node);
+            }
         } else if (compare < 0) {
             // 当前值比待删除的值要小，则从右子树查找
             node.setRight(deleteNode(node.getRight(), value));
+            if (node.getRight() != null) {
+                node.getRight().setParent(node);
+            }
         } else {
             // 找到要删除的值了
             if (node.getLeft() == null || node.getRight() == null) {
@@ -115,7 +125,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
             } else {
                 // 有两个孩子
                 // 找到后继节点（右树中最小的那个）
-                Node<T> minNode = findMinNodeInTree(node.getRight());
+                Node<V> minNode = findMinNodeInTree(node.getRight());
                 // 删除后继节点
                 deleteNode(node, minNode.getValue());
                 // 设置当前节点的值为后继节点的值
@@ -134,7 +144,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinaryTree<T> {
      * @param node
      * @return
      */
-    private Node<T> findMinNodeInTree(Node<T> node) {
+    private Node<V> findMinNodeInTree(Node<V> node) {
         if (node.getLeft() != null) {
             return findMinNodeInTree(node.getLeft());
         }
