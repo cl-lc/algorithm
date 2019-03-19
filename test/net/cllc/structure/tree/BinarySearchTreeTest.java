@@ -1,6 +1,6 @@
 package net.cllc.structure.tree;
 
-import net.cllc.structure.tree.node.Node;
+import net.cllc.structure.tree.node.BinarySearchNode;
 
 
 /**
@@ -12,14 +12,14 @@ public class BinarySearchTreeTest {
 
     public static void main(String[] args) {
         // 初始化
-        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        BinarySearchTree<Integer, BinarySearchNode<Integer>> tree = new BinarySearchTree<>();
         for (int i : INPUT) {
             tree.insertNode(i);
         }
         tree.printLDR();
 
         // 查找
-        Node<Integer> node = tree.searchNode(70);
+        BinarySearchNode<Integer> node = tree.searchNode(70);
         assert node.getHeight() == 1;
         assert node.getParent().getValue() == 80;
         assert node.getLeft() == null;

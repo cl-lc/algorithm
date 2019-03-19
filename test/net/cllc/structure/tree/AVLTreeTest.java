@@ -1,6 +1,6 @@
 package net.cllc.structure.tree;
 
-import net.cllc.structure.tree.node.Node;
+import net.cllc.structure.tree.node.BinarySearchNode;
 
 
 /**
@@ -19,7 +19,7 @@ public class AVLTreeTest {
         tree.printLDR();
 
         // 查找
-        Node<Integer> node = tree.searchNode(6);
+        BinarySearchNode<Integer> node = tree.searchNode(6);
         assert node.getHeight() == 1;
         assert node.getParent().getValue() == 4;
         assert node.getLeft().getValue().equals(5);

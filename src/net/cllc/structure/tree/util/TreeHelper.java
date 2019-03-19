@@ -1,6 +1,6 @@
 package net.cllc.structure.tree.util;
 
-import net.cllc.structure.tree.node.Node;
+import net.cllc.structure.tree.node.BaseBinaryNode;
 
 /**
  * @author chenlei
@@ -13,7 +13,7 @@ public class TreeHelper {
      * @param node
      * @return
      */
-    public static int getHeight(Node node) {
+    public static <V extends Comparable<V>, N extends BaseBinaryNode<V, N>> int getHeight(N node) {
         if (node == null) {
             return -1;
         }
@@ -25,7 +25,7 @@ public class TreeHelper {
      *
      * @param node
      */
-    public static void updateHeight(Node node) {
+    public static <V extends Comparable<V>, N extends BaseBinaryNode<V, N>> void updateHeight(N node) {
         if (node == null) {
             return;
         }

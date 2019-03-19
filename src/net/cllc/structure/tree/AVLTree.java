@@ -1,6 +1,6 @@
 package net.cllc.structure.tree;
 
-import net.cllc.structure.tree.node.Node;
+import net.cllc.structure.tree.node.BinarySearchNode;
 import net.cllc.structure.tree.util.RotateHelper;
 import net.cllc.structure.tree.util.TreeHelper;
 
@@ -8,7 +8,7 @@ import net.cllc.structure.tree.util.TreeHelper;
  * @author chenlei
  * @date 2019-03-13
  */
-public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
+public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, BinarySearchNode<V>> {
     private static final int BALANCE_FACTOR = 2;
 
     /**
@@ -19,7 +19,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
      * @return
      */
     @Override
-    protected Node<V> insertNode(Node<V> node, V value) {
+    protected BinarySearchNode<V> insertNode(BinarySearchNode<V> node, V value) {
         // 调用父类的插入节点方法
         node = super.insertNode(node, value);
 
@@ -39,7 +39,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
      * @return
      */
     @Override
-    protected Node<V> deleteNode(Node<V> node, V value) {
+    protected BinarySearchNode<V> deleteNode(BinarySearchNode<V> node, V value) {
         // 调用父类的删除节点方法
         node = super.deleteNode(node, value);
 
@@ -57,7 +57,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
      * @param node
      * @return
      */
-    private boolean needRotate(Node<V> node) {
+    private boolean needRotate(BinarySearchNode<V> node) {
         int balanceFactor = getBalanceFactor(node);
         return Math.abs(balanceFactor) == BALANCE_FACTOR;
     }
@@ -68,7 +68,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
      * @param node
      * @return
      */
-    private Node<V> rotate(Node<V> node) {
+    private BinarySearchNode<V> rotate(BinarySearchNode<V> node) {
         int balanceFactor = getBalanceFactor(node);
         int subBalanceFactor;
         if (balanceFactor > 0) {
@@ -101,7 +101,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V> {
      * @param node
      * @return
      */
-    private int getBalanceFactor(Node<V> node) {
+    private int getBalanceFactor(BinarySearchNode<V> node) {
         if (node == null) {
             return 0;
         }

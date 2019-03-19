@@ -1,13 +1,14 @@
 package net.cllc.structure.tree;
 
-import net.cllc.structure.tree.node.Node;
+import net.cllc.structure.tree.node.BaseBinaryNode;
+import net.cllc.structure.tree.node.BinarySearchNode;
 import net.cllc.structure.tree.util.TreeHelper;
 
 /**
  * @author chenlei
  * @date 2019-03-13
  */
-public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V> {
+public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<V, N>> extends BaseBinaryTree<V, N> {
     /**
      * 插入节点
      *
@@ -25,7 +26,7 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
      * @param value
      * @return
      */
-    protected Node<V> insertNode(Node<V> node, V value) {
+    protected N insertNode(N node, V value) {
         if (node == null) {
             return newNode(value);
         }
@@ -50,7 +51,7 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
      * @param value
      * @return
      */
-    public Node<V> searchNode(V value) {
+    public N searchNode(V value) {
         if (root == null) {
             return null;
         }
@@ -65,7 +66,7 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
      * @param value
      * @return
      */
-    private Node<V> searchNode(Node<V> node, V value) {
+    private N searchNode(N node, V value) {
         if (node == null) {
             return null;
         }
@@ -97,7 +98,7 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
      * @param value
      * @return
      */
-    protected Node<V> deleteNode(Node<V> node, V value) {
+    protected N deleteNode(N node, V value) {
         if (node == null) {
             return null;
         }
@@ -123,7 +124,7 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
             } else {
                 // 有两个孩子
                 // 找到后继节点（右树中最小的那个）
-                Node<V> minNode = findMinNodeInTree(node.getRight());
+                N minNode = findMinNodeInTree(node.getRight());
                 // 删除后继节点
                 deleteNode(node, minNode.getValue());
                 // 设置当前节点的值为后继节点的值
@@ -142,7 +143,7 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
      * @param node
      * @return
      */
-    private Node<V> findMinNodeInTree(Node<V> node) {
+    private N findMinNodeInTree(N node) {
         if (node.getLeft() != null) {
             return findMinNodeInTree(node.getLeft());
         }
@@ -157,7 +158,8 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
      * @return
      */
     @Override
-    protected Node<V> newNode(V value) {
-        return new Node<>(value);
+    @SuppressWarnings("unchecked")
+    protected N newNode(V value) {
+        return (N) new BinarySearchNode<>(value);
     }
 }

@@ -4,14 +4,14 @@ package net.cllc.structure.tree.node;
  * @author chenlei
  * @date 2019-03-13
  */
-public class Node<V extends Comparable<V>> {
+public abstract class BaseBinaryNode<V extends Comparable<V>, N extends BaseBinaryNode<V, N>> {
     private V value;
-    private Node<V> left;
-    private Node<V> right;
-    private Node<V> parent;
+    private N left;
+    private N right;
+    private N parent;
     private int height;
 
-    public Node(V value) {
+    public BaseBinaryNode(V value) {
         this.value = value;
         this.height = 0;
     }
@@ -24,27 +24,27 @@ public class Node<V extends Comparable<V>> {
         this.value = value;
     }
 
-    public Node<V> getLeft() {
+    public N getLeft() {
         return left;
     }
 
-    public void setLeft(Node<V> left) {
+    public void setLeft(N left) {
         this.left = left;
     }
 
-    public Node<V> getRight() {
+    public N getRight() {
         return right;
     }
 
-    public void setRight(Node<V> right) {
+    public void setRight(N right) {
         this.right = right;
     }
 
-    public Node<V> getParent() {
+    public N getParent() {
         return parent;
     }
 
-    public void setParent(Node<V> parent) {
+    public void setParent(N parent) {
         this.parent = parent;
     }
 

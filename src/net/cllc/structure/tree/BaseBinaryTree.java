@@ -1,13 +1,13 @@
 package net.cllc.structure.tree;
 
-import net.cllc.structure.tree.node.Node;
+import net.cllc.structure.tree.node.BaseBinaryNode;
 
 /**
  * @author chenlei
  * @date 2019-03-14
  */
-public abstract class BaseBinaryTree<V extends Comparable<V>> {
-    protected Node<V> root;
+public abstract class BaseBinaryTree<V extends Comparable<V>, N extends BaseBinaryNode<V, N>> {
+    protected N root;
 
     /**
      * 中序打印
@@ -21,7 +21,7 @@ public abstract class BaseBinaryTree<V extends Comparable<V>> {
      *
      * @param node
      */
-    private void printLDR(Node<V> node) {
+    private void printLDR(N node) {
         if (node == null) {
             return;
         }
@@ -37,5 +37,5 @@ public abstract class BaseBinaryTree<V extends Comparable<V>> {
      * @param value
      * @return
      */
-    protected abstract Node<V> newNode(V value);
+    protected abstract N newNode(V value);
 }

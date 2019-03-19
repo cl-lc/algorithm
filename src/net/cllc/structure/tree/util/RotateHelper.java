@@ -1,6 +1,6 @@
 package net.cllc.structure.tree.util;
 
-import net.cllc.structure.tree.node.Node;
+import net.cllc.structure.tree.node.BaseBinaryNode;
 
 /**
  * @author chenlei
@@ -14,10 +14,10 @@ public class RotateHelper {
      * @param node
      * @return 返回新的根节点
      */
-    public static <V extends Comparable<V>> Node<V> rightRotate(Node<V> node) {
-        Node<V> parent = node.getParent();
-        Node<V> a = node.getLeft();
-        Node<V> b = a.getRight();
+    public static <V extends Comparable<V>, N extends BaseBinaryNode<V, N>> N rightRotate(N node) {
+        N parent = node.getParent();
+        N a = node.getLeft();
+        N b = a.getRight();
 
         a.setRight(node);
         a.setParent(parent);
@@ -42,10 +42,10 @@ public class RotateHelper {
      * @param node
      * @return 返回新的根节点
      */
-    public static <V extends Comparable<V>> Node<V> leftRotate(Node<V> node) {
-        Node<V> parent = node.getParent();
-        Node<V> a = node.getRight();
-        Node<V> b = a.getLeft();
+    public static <V extends Comparable<V>, N extends BaseBinaryNode<V, N>> N leftRotate(N node) {
+        N parent = node.getParent();
+        N a = node.getRight();
+        N b = a.getLeft();
 
         a.setLeft(node);
         a.setParent(parent);
@@ -70,7 +70,7 @@ public class RotateHelper {
      * @param node
      * @return 返回新的根节点
      */
-    public static <V extends Comparable<V>> Node<V> lrRotate(Node<V> node) {
+    public static <V extends Comparable<V>, N extends BaseBinaryNode<V, N>> N lrRotate(N node) {
         // 先左旋一次左子节点
         node.setLeft(leftRotate(node.getLeft()));
         node.getLeft().setParent(node);
@@ -86,7 +86,7 @@ public class RotateHelper {
      * @param node
      * @return 返回新的根节点
      */
-    public static <V extends Comparable<V>> Node<V> rlRotate(Node<V> node) {
+    public static <V extends Comparable<V>, N extends BaseBinaryNode<V, N>> N rlRotate(N node) {
         // 先右旋一次右子节点
         node.setRight(rightRotate(node.getRight()));
         node.getRight().setParent(node);
