@@ -1,6 +1,7 @@
 package net.cllc.structure.tree;
 
 import net.cllc.structure.tree.node.Node;
+import net.cllc.structure.tree.util.TreeHelper;
 
 /**
  * @author chenlei
@@ -26,7 +27,7 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
      */
     protected Node<V> insertNode(Node<V> node, V value) {
         if (node == null) {
-            return new Node<>(value);
+            return newNode(value);
         }
 
         int compare = node.getValue().compareTo(value);
@@ -37,7 +38,8 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
             node.setRight(insertNode(node.getRight(), value));
             node.getRight().setParent(node);
         }
-        updateHeight(node);
+
+        TreeHelper.updateHeight(node);
 
         return node;
     }
@@ -129,7 +131,7 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
             }
         }
 
-        updateHeight(node);
+        TreeHelper.updateHeight(node);
 
         return node;
     }
@@ -146,5 +148,16 @@ public class BinarySearchTree<V extends Comparable<V>> extends BaseBinaryTree<V>
         }
 
         return node;
+    }
+
+    /**
+     * 新建一个节点
+     *
+     * @param value
+     * @return
+     */
+    @Override
+    protected Node<V> newNode(V value) {
+        return new Node<>(value);
     }
 }

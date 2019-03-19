@@ -32,28 +32,10 @@ public abstract class BaseBinaryTree<V extends Comparable<V>> {
     }
 
     /**
-     * 获取高度
+     * 新建一个节点
      *
-     * @param node
+     * @param value
      * @return
      */
-    protected int getHeight(Node<V> node) {
-        if (node == null) {
-            return -1;
-        }
-        return node.getHeight();
-    }
-
-    /**
-     * 更新节点高度
-     *
-     * @param node
-     */
-    protected void updateHeight(Node<V> node) {
-        if (node == null) {
-            return;
-        }
-
-        node.setHeight(Math.max(getHeight(node.getLeft()), getHeight(node.getRight())) + 1);
-    }
+    protected abstract Node<V> newNode(V value);
 }
