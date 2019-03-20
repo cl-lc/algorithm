@@ -1,7 +1,6 @@
 package net.cllc.structure.tree;
 
 import net.cllc.structure.tree.node.AVLNode;
-import net.cllc.structure.tree.util.AVLTreeHelper;
 import net.cllc.structure.tree.util.RotateHelper;
 
 /**
@@ -22,7 +21,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, AVLNod
     protected AVLNode<V> insertNode(AVLNode<V> parent, AVLNode<V> node, V value) {
         // 调用父类的插入节点方法
         node = super.insertNode(parent, node, value);
-        AVLTreeHelper.updateHeight(node);
+        updateHeight(node);
 
         // 判断是否需要旋转
         if (needRotate(node)) {
@@ -43,7 +42,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, AVLNod
     protected AVLNode<V> deleteNode(AVLNode<V> node, V value) {
         // 调用父类的删除节点方法
         node = super.deleteNode(node, value);
-        AVLTreeHelper.updateHeight(node);
+        updateHeight(node);
 
         // 判断是否需要旋转
         if (needRotate(node)) {
@@ -108,7 +107,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, AVLNod
             return 0;
         }
 
-        return AVLTreeHelper.getHeight(node.getLeft()) - AVLTreeHelper.getHeight(node.getRight());
+        return getHeight(node.getLeft()) - getHeight(node.getRight());
     }
 
     /**
@@ -119,8 +118,8 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, AVLNod
      */
     private AVLNode<V> rightRotate(AVLNode<V> node) {
         RotateHelper.rightRotate(node);
-        AVLTreeHelper.updateHeight(node);
-        AVLTreeHelper.updateHeight(node.getParent());
+        updateHeight(node);
+        updateHeight(node.getParent());
 
         return node.getParent();
     }
@@ -133,8 +132,8 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, AVLNod
      */
     private AVLNode<V> leftRotate(AVLNode<V> node) {
         RotateHelper.leftRotate(node);
-        AVLTreeHelper.updateHeight(node);
-        AVLTreeHelper.updateHeight(node.getParent());
+        updateHeight(node);
+        updateHeight(node.getParent());
 
         return node.getParent();
     }
@@ -165,6 +164,32 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, AVLNod
 
         // 再左旋一次
         return leftRotate(node);
+    }
+
+    /**
+     * 获取高度
+     *
+     * @param node
+     * @return
+     */
+    private int getHeight(AVLNode<V> node) {
+        if (node == null) {
+            return -1;
+        }
+        return node.getHeight();
+    }
+
+    /**
+     * 更新节点高度
+     *
+     * @param node
+     */
+    private void updateHeight(AVLNode<V> node) {
+        if (node == null) {
+            return;
+        }
+
+        node.setHeight(Math.max(getHeight(node.getLeft()), getHeight(node.getRight())) + 1);
     }
 
     /**

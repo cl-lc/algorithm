@@ -26,4 +26,25 @@ public class TreeHelper {
             parent.setRight(child);
         }
     }
+
+    /**
+     * 获取节点的兄弟节点
+     *
+     * @param node
+     * @param <V>
+     * @param <N>
+     * @return
+     */
+    public static <V extends Comparable<V>, N extends BaseBinaryNode<V, N>> N getBrother(N node) {
+        N parent = node.getParent();
+        if (parent == null) {
+            return null;
+        }
+
+        if (node.equals(parent.getLeft())) {
+            return parent.getRight();
+        } else {
+            return parent.getLeft();
+        }
+    }
 }
