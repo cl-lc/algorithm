@@ -45,11 +45,11 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
     }
 
     /**
-     * 处理红色节点，只有以下三种情况需要处理
+     * 处理红色节点，只有以下几种情况需要处理
      * * 儿子节点，父节点，叔叔节点都是红色，需要变换颜色
      * * 儿子节点，父节点是红色，叔叔节点是黑色或者缺失，则要根据是LL/RR还是LR/RL
-     * * LR/RL，先转一次，然后返回，交由递归父节点的时候继续处理
-     * * LL/RR，不处理，交由递归父节点的时候继续处理
+     * * * LR/RL，先转一次，然后返回，交由递归父节点的时候继续处理
+     * * * LL/RR，不处理，交由递归父节点的时候继续处理
      *
      * @param node
      * @return

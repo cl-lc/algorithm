@@ -119,11 +119,11 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
             } else {
                 // 有两个孩子
                 // 找到后继节点（右树中最小的那个）
-                N minNode = findMinNodeInTree(node.getRight());
+                N successor = findSuccessor(node.getRight());
                 // 删除后继节点
-                deleteNode(node, minNode.getValue());
+                deleteNode(node, successor.getValue());
                 // 设置当前节点的值为后继节点的值
-                node.setValue(minNode.getValue());
+                node.setValue(successor.getValue());
             }
         }
 
@@ -131,14 +131,28 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
     }
 
     /**
-     * 找到一棵树中，value最小的那个节点
+     * 找到一个节点的后继节点
      *
      * @param node
      * @return
      */
-    private N findMinNodeInTree(N node) {
+    protected N findSuccessor(N node) {
         if (node.getLeft() != null) {
-            return findMinNodeInTree(node.getLeft());
+            return findSuccessor(node.getLeft());
+        }
+
+        return node;
+    }
+
+    /**
+     * 找到一个节点的前驱节点
+     *
+     * @param node
+     * @return
+     */
+    protected N findPredecessor(N node) {
+        if (node.getLeft() != null) {
+            return findPredecessor(node.getRight());
         }
 
         return node;
