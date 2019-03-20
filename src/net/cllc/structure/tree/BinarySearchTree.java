@@ -13,7 +13,6 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
      * 插入节点
      *
      * @param value
-     * @return
      */
     public void insertNode(V value) {
         root = insertNode(null, root, value);

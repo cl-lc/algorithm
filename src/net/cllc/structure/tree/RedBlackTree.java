@@ -12,97 +12,108 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
     /**
      * 插入节点
      *
-     * @param node
+     * @param value
+     */
+    @Override
+    public void insertNode(V value) {
+        if (root == null) {
+            root = newNode(null, value);
+            root.setRed(false);
+            return;
+        }
+
+        // 插入节点
+        RedBlackNode<V> node = insert(value);
+        // 调整
+        adjustAfterInsert(node);
+    }
+
+    /**
+     * 插入节点
+     *
      * @param value
      * @return
      */
-    @Override
-    protected RedBlackNode<V> insertNode(RedBlackNode<V> parent, RedBlackNode<V> node, V value) {
-        // 调用父类的插入节点方法
-        node = super.insertNode(parent, node, value);
+    private RedBlackNode<V> insert(V value) {
+        RedBlackNode<V> node = root;
+        RedBlackNode<V> parent;
+        do {
+            parent = node;
+            node = node.getValue().compareTo(value) > 0 ? node.getLeft() : node.getRight();
+        } while (node != null);
 
-        return adjustAfterInsert(node);
+        node = newNode(parent, value);
+        if (parent.getValue().compareTo(value) > 0) {
+            parent.setLeft(node);
+        } else {
+            parent.setRight(node);
+        }
+
+        return node;
     }
 
     /**
      * 插入之后的调整
      *
      * @param node
-     * @return
      */
-    private RedBlackNode<V> adjustAfterInsert(RedBlackNode<V> node) {
+    private void adjustAfterInsert(RedBlackNode<V> node) {
         RedBlackNode<V> parent = node.getParent();
-        // a: 空树插入第一个根节点
+        // a: 第一个根节点
         if (parent == null) {
             node.setRed(false);
+            return;
         }
 
-        if (isRedNode(node)) {
-            return adjustRedNodeAfterInsert(node);
-        } else {
-            return adjustBlackNodeAfterInsert(node);
-        }
-    }
-
-    /**
-     * 处理红色节点，只有以下几种情况需要处理
-     * * 儿子节点，父节点，叔叔节点都是红色，需要变换颜色
-     * * 儿子节点，父节点是红色，叔叔节点是黑色或者缺失，则要根据是LL/RR还是LR/RL
-     * * * LR/RL，先转一次，然后返回，交由递归父节点的时候继续处理
-     * * * LL/RR，不处理，交由递归父节点的时候继续处理
-     *
-     * @param node
-     * @return
-     */
-    private RedBlackNode<V> adjustRedNodeAfterInsert(RedBlackNode<V> node) {
-        if (!hasRedChild(node)) {
-            return node;
+        // b: 父节点是黑色
+        if (!parent.isRed()) {
+            return;
         }
 
-        RedBlackNode<V> parent = node.getParent();
-        RedBlackNode<V> brother = TreeHelper.getBrother(node);
-        // 子节点是红色，父节点是红色，叔叔节点是红色
-        if (isRedNode(brother)) {
+        RedBlackNode<V> grandpa = parent.getParent();
+        RedBlackNode<V> uncle = TreeHelper.getBrother(parent);
+        // c: 父节点和叔叔节点是红色
+        if (isRedNode(parent) && isRedNode(uncle)) {
+            parent.setRed(false);
+            uncle.setRed(false);
+            grandpa.setRed(true);
+            // 递归判断
+            adjustAfterInsert(grandpa);
+            return;
+        }
+
+        // d: LL/RR
+        boolean isLL = node.equals(parent.getLeft()) && parent.equals(grandpa.getLeft());
+        boolean isRR = node.equals(parent.getRight()) && parent.equals(grandpa.getRight());
+        if (isLL || isRR) {
+            if (isLL) {
+                node = RotateHelper.rightRotate(grandpa);
+                node.getRight().setRed(true);
+            } else {
+                node = RotateHelper.leftRotate(grandpa);
+                node.getLeft().setRed(true);
+            }
+
             node.setRed(false);
-            brother.setRed(false);
-            node.getParent().setRed(true);
-            return node;
+            // 如果祖父节点就是根节点的话，需要重置根节点变量
+            if (grandpa.equals(root)) {
+                root = node;
+            }
         }
 
-        // LR或者RL的情况，旋转一次形成LL或者RR，然后再由父节点递归处理
-        boolean isLR = node.equals(parent.getLeft()) && isRedNode(node.getRight());
-        boolean isRL = node.equals(parent.getRight()) && isRedNode(node.getLeft());
-        if (isLR) {
-            return RotateHelper.leftRotate(node);
-        } else if (isRL) {
-            return RotateHelper.rightRotate(node);
+        // e: LR/RL
+        boolean isLR = node.equals(parent.getRight()) && parent.equals(grandpa.getLeft());
+        boolean isRL = node.equals(parent.getLeft()) && parent.equals(grandpa.getRight());
+        if (isLR || isRL) {
+            if (isLR) {
+                RotateHelper.leftRotate(parent);
+            } else {
+                RotateHelper.rightRotate(parent);
+            }
+
+            // LR/RL被处理成LL/RR，再次调用调整函数
+            adjustAfterInsert(parent);
         }
-
-        return node;
-    }
-
-    /**
-     * 处理黑色节点，只有以下情况
-     * * 儿子节点，父节点是红色，叔叔节点是黑色或者缺失，则是LL或者LR
-     * （LR/RL在红色节点中已经被处理成了LL和RL问题）
-     *
-     * @param node
-     * @return
-     */
-    private RedBlackNode<V> adjustBlackNodeAfterInsert(RedBlackNode<V> node) {
-        boolean isLL = isRedNode(node.getLeft()) && isRedNode(node.getLeft().getLeft());
-        boolean isRR = isRedNode(node.getRight()) && isRedNode(node.getRight().getRight());
-        if (isLL) {
-            node = RotateHelper.rightRotate(node);
-            node.getRight().setRed(true);
-            node.setRed(false);
-        } else if (isRR) {
-            node = RotateHelper.leftRotate(node);
-            node.getLeft().setRed(true);
-            node.setRed(false);
-        }
-
-        return node;
     }
 
     /**
@@ -142,18 +153,5 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
      */
     private boolean isRedNode(RedBlackNode<V> node) {
         return node != null && node.isRed();
-    }
-
-    /**
-     * 是否含有红色节点
-     *
-     * @param node
-     * @return
-     */
-    private boolean hasRedChild(RedBlackNode<V> node) {
-        if (node == null) {
-            return false;
-        }
-        return isRedNode(node.getLeft()) || isRedNode(node.getRight());
     }
 }
