@@ -8,28 +8,22 @@ import net.cllc.structure.tree.node.BaseBinaryNode;
  */
 public class TreeHelper {
     /**
-     * 获取高度
+     * 更新孩子节点
      *
-     * @param node
-     * @return
+     * @param parent
+     * @param child
+     * @param <V>
+     * @param <N>
      */
-    public static <V extends Comparable<V>, N extends BaseBinaryNode<V, N>> int getHeight(N node) {
-        if (node == null) {
-            return -1;
-        }
-        return node.getHeight();
-    }
-
-    /**
-     * 更新节点高度
-     *
-     * @param node
-     */
-    public static <V extends Comparable<V>, N extends BaseBinaryNode<V, N>> void updateHeight(N node) {
-        if (node == null) {
+    public static <V extends Comparable<V>, N extends BaseBinaryNode<V, N>> void updateChild(N parent, N child) {
+        if (parent == null) {
             return;
         }
 
-        node.setHeight(Math.max(getHeight(node.getLeft()), getHeight(node.getRight())) + 1);
+        if (parent.getValue().compareTo(child.getValue()) > 0) {
+            parent.setLeft(child);
+        } else {
+            parent.setRight(child);
+        }
     }
 }

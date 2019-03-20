@@ -1,14 +1,14 @@
 package net.cllc.structure.tree;
 
-import net.cllc.structure.tree.node.BinarySearchNode;
+import net.cllc.structure.tree.node.AVLNode;
+import net.cllc.structure.tree.util.AVLTreeHelper;
 import net.cllc.structure.tree.util.RotateHelper;
-import net.cllc.structure.tree.util.TreeHelper;
 
 /**
  * @author chenlei
  * @date 2019-03-13
  */
-public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, BinarySearchNode<V>> {
+public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, AVLNode<V>> {
     private static final int BALANCE_FACTOR = 2;
 
     /**
@@ -19,9 +19,10 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, Binary
      * @return
      */
     @Override
-    protected BinarySearchNode<V> insertNode(BinarySearchNode<V> node, V value) {
+    protected AVLNode<V> insertNode(AVLNode<V> parent, AVLNode<V> node, V value) {
         // 调用父类的插入节点方法
-        node = super.insertNode(node, value);
+        node = super.insertNode(parent, node, value);
+        AVLTreeHelper.updateHeight(node);
 
         // 判断是否需要旋转
         if (needRotate(node)) {
@@ -39,9 +40,10 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, Binary
      * @return
      */
     @Override
-    protected BinarySearchNode<V> deleteNode(BinarySearchNode<V> node, V value) {
+    protected AVLNode<V> deleteNode(AVLNode<V> node, V value) {
         // 调用父类的删除节点方法
         node = super.deleteNode(node, value);
+        AVLTreeHelper.updateHeight(node);
 
         // 判断是否需要旋转
         if (needRotate(node)) {
@@ -57,7 +59,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, Binary
      * @param node
      * @return
      */
-    private boolean needRotate(BinarySearchNode<V> node) {
+    private boolean needRotate(AVLNode<V> node) {
         int balanceFactor = getBalanceFactor(node);
         return Math.abs(balanceFactor) == BALANCE_FACTOR;
     }
@@ -68,7 +70,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, Binary
      * @param node
      * @return
      */
-    private BinarySearchNode<V> rotate(BinarySearchNode<V> node) {
+    private AVLNode<V> rotate(AVLNode<V> node) {
         int balanceFactor = getBalanceFactor(node);
         int subBalanceFactor;
         if (balanceFactor > 0) {
@@ -80,16 +82,16 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, Binary
         if (balanceFactor > 0) {
             // 注意这里是>=
             if (subBalanceFactor >= 0) {
-                return RotateHelper.rightRotate(node);
+                return rightRotate(node);
             } else {
-                return RotateHelper.lrRotate(node);
+                return lrRotate(node);
             }
         } else {
             // 注意这里是<=
             if (subBalanceFactor <= 0) {
-                return RotateHelper.leftRotate(node);
+                return leftRotate(node);
             } else {
-                return RotateHelper.rlRotate(node);
+                return rlRotate(node);
             }
         }
     }
@@ -101,12 +103,80 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, Binary
      * @param node
      * @return
      */
-    private int getBalanceFactor(BinarySearchNode<V> node) {
+    private int getBalanceFactor(AVLNode<V> node) {
         if (node == null) {
             return 0;
         }
 
-        return TreeHelper.getHeight(node.getLeft()) - TreeHelper.getHeight(node.getRight());
+        return AVLTreeHelper.getHeight(node.getLeft()) - AVLTreeHelper.getHeight(node.getRight());
     }
 
+    /**
+     * 右旋
+     *
+     * @param node
+     * @return 返回新的根节点
+     */
+    private AVLNode<V> rightRotate(AVLNode<V> node) {
+        RotateHelper.rightRotate(node);
+        AVLTreeHelper.updateHeight(node);
+        AVLTreeHelper.updateHeight(node.getParent());
+
+        return node.getParent();
+    }
+
+    /**
+     * 左旋
+     *
+     * @param node
+     * @return 返回新的根节点
+     */
+    private AVLNode<V> leftRotate(AVLNode<V> node) {
+        RotateHelper.leftRotate(node);
+        AVLTreeHelper.updateHeight(node);
+        AVLTreeHelper.updateHeight(node.getParent());
+
+        return node.getParent();
+    }
+
+    /**
+     * LR旋转
+     *
+     * @param node
+     * @return 返回新的根节点
+     */
+    private AVLNode<V> lrRotate(AVLNode<V> node) {
+        // 先左旋一次左子节点
+        leftRotate(node.getLeft());
+
+        // 再右旋一次
+        return rightRotate(node);
+    }
+
+    /**
+     * RL旋转
+     *
+     * @param node
+     * @return 返回新的根节点
+     */
+    private AVLNode<V> rlRotate(AVLNode<V> node) {
+        // 先右旋一次右子节点
+        rightRotate(node.getRight());
+
+        // 再左旋一次
+        return leftRotate(node);
+    }
+
+    /**
+     * 新建一个节点
+     *
+     * @param value
+     * @return
+     */
+    @Override
+    protected AVLNode<V> newNode(AVLNode<V> parent, V value) {
+        AVLNode<V> node = new AVLNode<>(value);
+        node.setParent(parent);
+        return node;
+    }
 }

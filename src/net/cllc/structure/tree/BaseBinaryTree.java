@@ -34,8 +34,9 @@ public abstract class BaseBinaryTree<V extends Comparable<V>, N extends BaseBina
     /**
      * 新建一个节点
      *
+     * @param parent
      * @param value
      * @return
      */
-    protected abstract N newNode(V value);
+    protected abstract N newNode(N parent, V value);
 }

@@ -16,7 +16,7 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
      * @return
      */
     public void insertNode(V value) {
-        root = insertNode(root, value);
+        root = insertNode(null, root, value);
     }
 
     /**
@@ -26,21 +26,18 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
      * @param value
      * @return
      */
-    protected N insertNode(N node, V value) {
+    protected N insertNode(N parent, N node, V value) {
         if (node == null) {
-            return newNode(value);
+            node = newNode(parent, value);
+            TreeHelper.updateChild(parent, node);
+            return node;
         }
 
-        int compare = node.getValue().compareTo(value);
-        if (compare > 0) {
-            node.setLeft(insertNode(node.getLeft(), value));
-            node.getLeft().setParent(node);
+        if (node.getValue().compareTo(value) > 0) {
+            insertNode(node, node.getLeft(), value);
         } else {
-            node.setRight(insertNode(node.getRight(), value));
-            node.getRight().setParent(node);
+            insertNode(node, node.getRight(), value);
         }
-
-        TreeHelper.updateHeight(node);
 
         return node;
     }
@@ -107,20 +104,18 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
         if (compare > 0) {
             // 当前值比待删除的值要大，则从左子树查找
             node.setLeft(deleteNode(node.getLeft(), value));
-            if (node.getLeft() != null) {
-                node.getLeft().setParent(node);
-            }
         } else if (compare < 0) {
             // 当前值比待删除的值要小，则从右子树查找
             node.setRight(deleteNode(node.getRight(), value));
-            if (node.getRight() != null) {
-                node.getRight().setParent(node);
-            }
         } else {
             // 找到要删除的值了
             if (node.getLeft() == null || node.getRight() == null) {
                 // 有0个或者1个孩子
-                node = node.getLeft() == null ? node.getRight() : node.getLeft();
+                N child = node.getLeft() == null ? node.getRight() : node.getLeft();
+                if (child != null) {
+                    child.setParent(node);
+                }
+                node = child;
             } else {
                 // 有两个孩子
                 // 找到后继节点（右树中最小的那个）
@@ -131,8 +126,6 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
                 node.setValue(minNode.getValue());
             }
         }
-
-        TreeHelper.updateHeight(node);
 
         return node;
     }
@@ -159,7 +152,9 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
      */
     @Override
     @SuppressWarnings("unchecked")
-    protected N newNode(V value) {
-        return (N) new BinarySearchNode<>(value);
+    protected N newNode(N parent, V value) {
+        N node = (N) new BinarySearchNode<>(value);
+        node.setParent(parent);
+        return node;
     }
 }
