@@ -8,7 +8,7 @@ import net.cllc.structure.tree.node.BinarySearchNode;
  * @date 2019-03-13
  */
 public class BinarySearchTreeTest {
-    private static final int[] INPUT = new int[]{50, 30, 80, 20, 35, 34, 32, 40, 70, 75, 99};
+    private static final int[] INPUT = new int[]{50, 30, 80, 20, 35, 34, 32, 40, 70, 75, 99, 33};
 
     public static void main(String[] args) {
         // 初始化
@@ -49,7 +49,10 @@ public class BinarySearchTreeTest {
         assert node.getRight().getValue().equals(35);
 
         node = tree.searchNode(34);
-        assert node.getLeft() == null;
+        assert node.getLeft().getValue().equals(33);
+
+        node = tree.searchNode(33);
+        assert node.getParent().getValue().equals(34);
 
         // 删除
         tree.deleteNode(80);

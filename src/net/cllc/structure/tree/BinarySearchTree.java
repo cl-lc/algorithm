@@ -103,18 +103,27 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
         int compare = node.getValue().compareTo(value);
         if (compare > 0) {
             // 当前值比待删除的值要大，则从左子树查找
-            node.setLeft(deleteNode(node.getLeft(), value));
+            deleteNode(node.getLeft(), value);
         } else if (compare < 0) {
             // 当前值比待删除的值要小，则从右子树查找
-            node.setRight(deleteNode(node.getRight(), value));
+            deleteNode(node.getRight(), value);
         } else {
             // 找到要删除的值了
             if (node.getLeft() == null || node.getRight() == null) {
                 // 有0个或者1个孩子
-                N child = node.getLeft() == null ? node.getRight() : node.getLeft();
+                N parent = node.getParent();
+                N child = node.getLeft() != null ? node.getLeft() : node.getRight();
                 if (child != null) {
-                    child.setParent(node);
+                    child.setParent(parent);
                 }
+
+                // 更新父节点的子节点
+                if (node.equals(parent.getLeft())) {
+                    parent.setLeft(child);
+                } else {
+                    parent.setRight(child);
+                }
+
                 node = child;
             } else {
                 // 有两个孩子
