@@ -6,7 +6,7 @@ import net.cllc.structure.tree.node.BaseBinaryNode;
  * @author chenlei
  * @date 2019-03-19
  */
-public class TreeHelper {
+public class BinaryTreeHelper {
     /**
      * 更新孩子节点
      *

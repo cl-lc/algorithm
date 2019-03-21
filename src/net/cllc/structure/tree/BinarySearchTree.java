@@ -2,7 +2,7 @@ package net.cllc.structure.tree;
 
 import net.cllc.structure.tree.node.BaseBinaryNode;
 import net.cllc.structure.tree.node.BinarySearchNode;
-import net.cllc.structure.tree.util.TreeHelper;
+import net.cllc.structure.tree.util.BinaryTreeHelper;
 
 /**
  * @author chenlei
@@ -28,7 +28,7 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
     protected N insertNode(N parent, N node, V value) {
         if (!isANode(node)) {
             node = newNodeWithLeaf(parent, value);
-            TreeHelper.updateChild(parent, node);
+            BinaryTreeHelper.updateChild(parent, node);
             return node;
         }
 
@@ -137,7 +137,7 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
         child.setParent(parent);
 
         // 更新父节点的子节点
-        if (TreeHelper.isLeftChild(parent, node)) {
+        if (BinaryTreeHelper.isLeftChild(parent, node)) {
             parent.setLeft(child);
         } else {
             parent.setRight(child);

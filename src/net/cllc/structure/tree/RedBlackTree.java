@@ -2,7 +2,7 @@ package net.cllc.structure.tree;
 
 import net.cllc.structure.tree.node.RedBlackNode;
 import net.cllc.structure.tree.util.RotateHelper;
-import net.cllc.structure.tree.util.TreeHelper;
+import net.cllc.structure.tree.util.BinaryTreeHelper;
 
 /**
  * @author chenlei
@@ -68,7 +68,7 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
         }
 
         RedBlackNode<V> grandpa = parent.getParent();
-        RedBlackNode<V> uncle = TreeHelper.getBrother(parent);
+        RedBlackNode<V> uncle = BinaryTreeHelper.getBrother(parent);
         // c: 父节点和叔叔节点是红色
         if (isRedNode(parent) && isRedNode(uncle)) {
             parent.setRed(false);
@@ -80,8 +80,8 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
         }
 
         // d: LL/RR
-        boolean isLL = TreeHelper.isLeftChild(parent, node) && TreeHelper.isLeftChild(grandpa, parent);
-        boolean isRR = TreeHelper.isRightChild(parent, node) && TreeHelper.isRightChild(grandpa, parent);
+        boolean isLL = BinaryTreeHelper.isLeftChild(parent, node) && BinaryTreeHelper.isLeftChild(grandpa, parent);
+        boolean isRR = BinaryTreeHelper.isRightChild(parent, node) && BinaryTreeHelper.isRightChild(grandpa, parent);
         if (isLL || isRR) {
             if (isLL) {
                 node = RotateHelper.rightRotate(grandpa);
@@ -97,8 +97,8 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
         }
 
         // e: LR/RL
-        boolean isLR = TreeHelper.isRightChild(parent, node) && TreeHelper.isLeftChild(grandpa, parent);
-        boolean isRL = TreeHelper.isLeftChild(parent, node) && TreeHelper.isRightChild(grandpa, parent);
+        boolean isLR = BinaryTreeHelper.isRightChild(parent, node) && BinaryTreeHelper.isLeftChild(grandpa, parent);
+        boolean isRL = BinaryTreeHelper.isLeftChild(parent, node) && BinaryTreeHelper.isRightChild(grandpa, parent);
         if (isLR || isRL) {
             if (isLR) {
                 RotateHelper.leftRotate(parent);
@@ -184,10 +184,10 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
             return;
         }
 
-        RedBlackNode<V> brother = TreeHelper.getBrother(node);
+        RedBlackNode<V> brother = BinaryTreeHelper.getBrother(node);
         // b: 父节点是黑色，兄弟节点是红色
         if (!isRedNode(parent) && isRedNode(brother)) {
-            if (TreeHelper.isLeftChild(parent, node)) {
+            if (BinaryTreeHelper.isLeftChild(parent, node)) {
                 RotateHelper.leftRotate(parent);
             } else {
                 RotateHelper.rightRotate(parent);
@@ -217,13 +217,13 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
 
         // e: 父节点颜色随意，兄弟节点为黑色，兄弟节点的内侧孩子为红色，外侧孩子为黑色（RL，LR）
         if (!isRedNode(brother)) {
-            if (TreeHelper.isLeftChild(parent, node) && isRedNode(lOfBrother)) {
+            if (BinaryTreeHelper.isLeftChild(parent, node) && isRedNode(lOfBrother)) {
                 RotateHelper.rightRotate(brother);
                 lOfBrother.setRed(false);
                 brother.setRed(true);
                 adjustAfterDelete(node);
                 return;
-            } else if (TreeHelper.isRightChild(parent, node) && isRedNode(rOfBrother)) {
+            } else if (BinaryTreeHelper.isRightChild(parent, node) && isRedNode(rOfBrother)) {
                 RotateHelper.leftRotate(brother);
                 rOfBrother.setRed(false);
                 brother.setRed(true);
@@ -234,13 +234,13 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
 
         // f: 父节点颜色随意，兄弟节点为黑色，兄弟节点的内侧孩子颜色随意，外侧孩子为红色
         if (!isRedNode(brother)) {
-            if (TreeHelper.isLeftChild(parent, node) && isRedNode(rOfBrother)) {
+            if (BinaryTreeHelper.isLeftChild(parent, node) && isRedNode(rOfBrother)) {
                 RotateHelper.leftRotate(parent);
                 brother.setRed(parent.isRed());
                 parent.setRed(false);
                 rOfBrother.setRed(false);
                 updateRoot(parent, brother);
-            } else if (TreeHelper.isRightChild(parent, node) && isRedNode(lOfBrother)) {
+            } else if (BinaryTreeHelper.isRightChild(parent, node) && isRedNode(lOfBrother)) {
                 RotateHelper.rightRotate(parent);
                 brother.setRed(parent.isRed());
                 parent.setRed(false);

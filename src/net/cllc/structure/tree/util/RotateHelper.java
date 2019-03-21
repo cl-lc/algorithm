@@ -19,7 +19,7 @@ public class RotateHelper {
         N a = node.getLeft();
         N b = a.getRight();
 
-        TreeHelper.updateChild(parent, a);
+        BinaryTreeHelper.updateChild(parent, a);
         a.setRight(node);
         a.setParent(parent);
         b.setParent(node);
@@ -41,7 +41,7 @@ public class RotateHelper {
         N a = node.getRight();
         N b = a.getLeft();
 
-        TreeHelper.updateChild(parent, a);
+        BinaryTreeHelper.updateChild(parent, a);
         a.setLeft(node);
         a.setParent(parent);
         b.setParent(node);
