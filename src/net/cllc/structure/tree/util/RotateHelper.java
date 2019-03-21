@@ -22,10 +22,7 @@ public class RotateHelper {
         TreeHelper.updateChild(parent, a);
         a.setRight(node);
         a.setParent(parent);
-
-        if (b != null) {
-            b.setParent(node);
-        }
+        b.setParent(node);
 
         node.setLeft(b);
         node.setParent(a);
@@ -47,10 +44,7 @@ public class RotateHelper {
         TreeHelper.updateChild(parent, a);
         a.setLeft(node);
         a.setParent(parent);
-
-        if (b != null) {
-            b.setParent(node);
-        }
+        b.setParent(node);
 
         node.setRight(b);
         node.setParent(a);

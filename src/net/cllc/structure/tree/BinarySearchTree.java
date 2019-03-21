@@ -26,8 +26,8 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
      * @return
      */
     protected N insertNode(N parent, N node, V value) {
-        if (node == null) {
-            node = newNode(parent, value);
+        if (!isANode(node)) {
+            node = newNodeWithLeaf(parent, value);
             TreeHelper.updateChild(parent, node);
             return node;
         }
@@ -63,7 +63,7 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
      * @return
      */
     private N searchNode(N node, V value) {
-        if (node == null) {
+        if (!isANode(node)) {
             return null;
         }
 
@@ -95,7 +95,7 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
      * @return
      */
     protected N deleteNode(N node, V value) {
-        if (node == null) {
+        if (!isANode(node)) {
             return null;
         }
 
@@ -108,7 +108,7 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
             deleteNode(node.getRight(), value);
         } else {
             // 找到要删除的值了
-            if (node.getLeft() == null || node.getRight() == null) {
+            if (!isANode(node.getLeft()) || !isANode(node.getRight())) {
                 deleteNodeWithoutTwoChild(node);
             } else {
                 // 有两个孩子
@@ -133,10 +133,8 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
     protected N deleteNodeWithoutTwoChild(N node) {
         // 有0个或者1个孩子
         N parent = node.getParent();
-        N child = node.getLeft() != null ? node.getLeft() : node.getRight();
-        if (child != null) {
-            child.setParent(parent);
-        }
+        N child = isANode(node.getLeft()) ? node.getLeft() : node.getRight();
+        child.setParent(parent);
 
         // 更新父节点的子节点
         if (TreeHelper.isLeftChild(parent, node)) {
@@ -155,7 +153,7 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
      * @return
      */
     protected N findSuccessor(N node) {
-        if (node.getLeft() != null) {
+        if (isANode(node.getLeft())) {
             return findSuccessor(node.getLeft());
         }
 
@@ -169,7 +167,7 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
      * @return
      */
     protected N findPredecessor(N node) {
-        if (node.getRight() != null) {
+        if (isANode(node.getRight())) {
             return findPredecessor(node.getRight());
         }
 
@@ -185,8 +183,6 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
     @Override
     @SuppressWarnings("unchecked")
     protected N newNode(N parent, V value) {
-        N node = (N) new BinarySearchNode<>(value);
-        node.setParent(parent);
-        return node;
+        return (N) new BinarySearchNode<>((BinarySearchNode<V>) parent, value);
     }
 }

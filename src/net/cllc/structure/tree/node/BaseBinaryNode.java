@@ -9,9 +9,12 @@ public abstract class BaseBinaryNode<V extends Comparable<V>, N extends BaseBina
     private N left;
     private N right;
     private N parent;
+    private boolean leaf;
 
-    public BaseBinaryNode(V value) {
+    public BaseBinaryNode(N parent, V value) {
+        this.parent = parent;
         this.value = value;
+        this.leaf = false;
     }
 
     public V getValue() {
@@ -44,5 +47,13 @@ public abstract class BaseBinaryNode<V extends Comparable<V>, N extends BaseBina
 
     public void setParent(N parent) {
         this.parent = parent;
+    }
+
+    public boolean isLeaf() {
+        return leaf;
+    }
+
+    public void setLeaf(boolean leaf) {
+        this.leaf = leaf;
     }
 }

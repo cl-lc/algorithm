@@ -21,7 +21,7 @@ public class BinarySearchTreeTest {
         // 查找
         BinarySearchNode<Integer> node = tree.searchNode(70);
         assert node.getParent().getValue() == 80;
-        assert node.getLeft() == null;
+        assert node.getLeft().isLeaf();
         assert node.getRight().getValue().equals(75);
 
         node = tree.searchNode(30);
@@ -66,6 +66,6 @@ public class BinarySearchTreeTest {
         node = tree.searchNode(99);
         assert node.getParent().getValue() == 50;
         assert node.getLeft().getValue().equals(70);
-        assert node.getRight() == null;
+        assert node.getRight().isLeaf();
     }
 }

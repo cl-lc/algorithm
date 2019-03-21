@@ -17,7 +17,7 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
     @Override
     public void insertNode(V value) {
         if (root == null) {
-            root = newNode(null, value);
+            root = newNodeWithLeaf(null, value);
             root.setRed(false);
             return;
         }
@@ -40,9 +40,9 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
         do {
             parent = node;
             node = node.getValue().compareTo(value) > 0 ? node.getLeft() : node.getRight();
-        } while (node != null);
+        } while (isANode(node));
 
-        node = newNode(parent, value);
+        node = newNodeWithLeaf(parent, value);
         if (parent.getValue().compareTo(value) > 0) {
             parent.setLeft(node);
         } else {
@@ -140,9 +140,20 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
      */
     @Override
     protected RedBlackNode<V> newNode(RedBlackNode<V> parent, V value) {
-        RedBlackNode<V> node = new RedBlackNode<>(value);
-        node.setParent(parent);
-        return node;
+        return new RedBlackNode<>(parent, value);
+    }
+
+    /**
+     * 新建一个叶子节点
+     *
+     * @param parent
+     * @return
+     */
+    @Override
+    protected RedBlackNode<V> newLeaf(RedBlackNode<V> parent) {
+        RedBlackNode<V> leaf = super.newLeaf(parent);
+        leaf.setRed(false);
+        return leaf;
     }
 
     /**

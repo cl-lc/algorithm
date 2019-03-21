@@ -23,7 +23,7 @@ public class AVLTreeTest {
         assert node.getHeight() == 1;
         assert node.getParent().getValue() == 4;
         assert node.getLeft().getValue().equals(5);
-        assert node.getRight() == null;
+        assert node.getRight().isLeaf();
 
         node = tree.searchNode(4);
         assert node.getHeight() == 2;

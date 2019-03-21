@@ -7,8 +7,8 @@ package net.cllc.structure.tree.node;
 public class AVLNode<V extends Comparable<V>> extends BaseBinaryNode<V, AVLNode<V>> {
     private int height;
 
-    public AVLNode(V value) {
-        super(value);
+    public AVLNode(AVLNode<V> parent, V value) {
+        super(parent, value);
         this.height = 0;
     }
 

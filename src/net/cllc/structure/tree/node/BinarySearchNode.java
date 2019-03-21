@@ -5,7 +5,7 @@ package net.cllc.structure.tree.node;
  * @date 2019-03-13
  */
 public class BinarySearchNode<V extends Comparable<V>> extends BaseBinaryNode<V, BinarySearchNode<V>> {
-    public BinarySearchNode(V value) {
-        super(value);
+    public BinarySearchNode(BinarySearchNode<V> parent, V value) {
+        super(parent, value);
     }
 }

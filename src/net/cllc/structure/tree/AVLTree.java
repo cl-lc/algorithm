@@ -103,7 +103,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, AVLNod
      * @return
      */
     private int getBalanceFactor(AVLNode<V> node) {
-        if (node == null) {
+        if (!isANode(node)) {
             return 0;
         }
 
@@ -173,7 +173,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, AVLNod
      * @return
      */
     private int getHeight(AVLNode<V> node) {
-        if (node == null) {
+        if (!isANode(node)) {
             return -1;
         }
         return node.getHeight();
@@ -185,7 +185,7 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, AVLNod
      * @param node
      */
     private void updateHeight(AVLNode<V> node) {
-        if (node == null) {
+        if (!isANode(node)) {
             return;
         }
 
@@ -200,8 +200,6 @@ public class AVLTree<V extends Comparable<V>> extends BinarySearchTree<V, AVLNod
      */
     @Override
     protected AVLNode<V> newNode(AVLNode<V> parent, V value) {
-        AVLNode<V> node = new AVLNode<>(value);
-        node.setParent(parent);
-        return node;
+        return new AVLNode<>(parent, value);
     }
 }

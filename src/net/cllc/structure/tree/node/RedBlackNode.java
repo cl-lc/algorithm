@@ -7,8 +7,8 @@ package net.cllc.structure.tree.node;
 public class RedBlackNode<V extends Comparable<V>> extends BaseBinaryNode<V, RedBlackNode<V>> {
     private boolean red;
 
-    public RedBlackNode(V value) {
-        super(value);
+    public RedBlackNode(RedBlackNode<V> parent, V value) {
+        super(parent, value);
 
         this.red = true;
     }

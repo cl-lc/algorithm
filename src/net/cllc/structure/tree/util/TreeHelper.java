@@ -16,7 +16,7 @@ public class TreeHelper {
      * @param <N>
      */
     public static <V extends Comparable<V>, N extends BaseBinaryNode<V, N>> void updateChild(N parent, N child) {
-        if (parent == null) {
+        if (parent == null || parent.isLeaf()) {
             return;
         }
 
