@@ -40,7 +40,44 @@ public class RedBlackTreeTest {
         node = tree.searchNode(35);
         assert node.getParent().getValue().equals(50);
         assert !node.isRed();
-        assert node.getLeft() == null;
+        assert node.getLeft().isLeaf();
         assert node.getRight().getValue().equals(40);
+
+        // 删除
+        tree.deleteNode(75);
+        node = tree.searchNode(80);
+        assert node.getParent().getValue().equals(50);
+        assert node.isRed();
+        assert node.getLeft().getValue().equals(70);
+        assert node.getRight().getValue().equals(99);
+
+        tree.deleteNode(34);
+        node = tree.searchNode(50);
+        assert node.getParent() == null;
+        assert !node.isRed();
+        assert node.getLeft().getValue().equals(32);
+        assert node.getRight().getValue().equals(80);
+
+        node = tree.searchNode(32);
+        assert !node.isRed();
+        assert node.getLeft().getValue().equals(30);
+        assert node.getRight().getValue().equals(35);
+
+        node = tree.searchNode(20);
+        assert node.getParent().getValue().equals(30);
+        assert node.isRed();
+        assert node.getLeft().isLeaf();
+        assert node.getRight().isLeaf();
+
+        tree.deleteNode(50);
+
+        node = tree.searchNode(40);
+        assert node.getParent() == null;
+        assert !node.isRed();
+        assert node.getLeft().getValue().equals(32);
+        assert node.getRight().getValue().equals(80);
+
+        node = tree.searchNode(35);
+        assert node.getRight().isLeaf();
     }
 }

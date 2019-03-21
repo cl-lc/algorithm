@@ -16,15 +16,7 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
      */
     @Override
     public void insertNode(V value) {
-        if (root == null) {
-            root = newNodeWithLeaf(null, value);
-            root.setRed(false);
-            return;
-        }
-
-        // 插入节点
         RedBlackNode<V> node = insert(value);
-        // 调整
         adjustAfterInsert(node);
     }
 
@@ -32,9 +24,14 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
      * 插入节点
      *
      * @param value
-     * @return
+     * @return 插入的新节点
      */
     private RedBlackNode<V> insert(V value) {
+        if (root == null) {
+            root = newNodeWithLeaf(null, value);
+            return root;
+        }
+
         RedBlackNode<V> node = root;
         RedBlackNode<V> parent;
         do {
@@ -83,8 +80,8 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
         }
 
         // d: LL/RR
-        boolean isLL = node.equals(parent.getLeft()) && parent.equals(grandpa.getLeft());
-        boolean isRR = node.equals(parent.getRight()) && parent.equals(grandpa.getRight());
+        boolean isLL = TreeHelper.isLeftChild(parent, node) && TreeHelper.isLeftChild(grandpa, parent);
+        boolean isRR = TreeHelper.isRightChild(parent, node) && TreeHelper.isRightChild(grandpa, parent);
         if (isLL || isRR) {
             if (isLL) {
                 node = RotateHelper.rightRotate(grandpa);
@@ -96,14 +93,12 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
 
             node.setRed(false);
             // 如果祖父节点就是根节点的话，需要重置根节点变量
-            if (grandpa.equals(root)) {
-                root = node;
-            }
+            updateRoot(grandpa, node);
         }
 
         // e: LR/RL
-        boolean isLR = node.equals(parent.getRight()) && parent.equals(grandpa.getLeft());
-        boolean isRL = node.equals(parent.getLeft()) && parent.equals(grandpa.getRight());
+        boolean isLR = TreeHelper.isRightChild(parent, node) && TreeHelper.isLeftChild(grandpa, parent);
+        boolean isRL = TreeHelper.isLeftChild(parent, node) && TreeHelper.isRightChild(grandpa, parent);
         if (isLR || isRL) {
             if (isLR) {
                 RotateHelper.leftRotate(parent);
@@ -119,17 +114,156 @@ public class RedBlackTree<V extends Comparable<V>> extends BinarySearchTree<V, R
     /**
      * 删除节点
      *
-     * @param node
      * @param value
      * @return
      */
     @Override
-    protected RedBlackNode<V> deleteNode(RedBlackNode<V> node, V value) {
-        // 调用父类的删除节点方法
-        node = super.deleteNode(node, value);
+    public void deleteNode(V value) {
+        RedBlackNode<V> delete = searchNode(value);
+        if (delete == null) {
+            return;
+        }
+        // 前驱节点
+        RedBlackNode<V> predecessor = findPredecessor(delete.getLeft());
+        RedBlackNode<V> node = delete(value);
 
+        // 删除一个黑色节点，但是补上来的是红色节点
+        if (!isRedNode(predecessor) && isRedNode(node)) {
+            node.setRed(false);
+            return;
+        }
 
-        return node;
+        // 删除一个红色节点，不影响
+        if (isRedNode(predecessor)) {
+            return;
+        }
+
+        // 调整逻辑
+        adjustAfterDelete(node);
+    }
+
+    /**
+     * 删除节点
+     *
+     * @param value
+     * @return 被删除后，补上来的节点
+     */
+    private RedBlackNode<V> delete(V value) {
+        RedBlackNode<V> delete = searchNode(value);
+        if (delete == null) {
+            return null;
+        }
+
+        if (delete.getLeft() == null || delete.getRight() == null) {
+            return deleteNodeWithoutTwoChild(delete);
+        } else {
+            // 有两个孩子
+            // 找到前驱 节点
+            RedBlackNode<V> predecessor = findPredecessor(delete.getLeft());
+            // 删除后继节点
+            RedBlackNode<V> next = deleteNodeWithoutTwoChild(predecessor);
+            // 设置当前节点的值为后继节点的值
+            delete.setValue(predecessor.getValue());
+            return next;
+        }
+    }
+
+    /**
+     * 删除之后调整
+     *
+     * @param node
+     */
+    private void adjustAfterDelete(RedBlackNode<V> node) {
+        if (node == null) {
+            return;
+        }
+
+        // a: node是根节点
+        RedBlackNode<V> parent = node.getParent();
+        if (parent == null) {
+            return;
+        }
+
+        RedBlackNode<V> brother = TreeHelper.getBrother(node);
+        // b: 父节点是黑色，兄弟节点是红色
+        if (!isRedNode(parent) && isRedNode(brother)) {
+            if (TreeHelper.isLeftChild(parent, node)) {
+                RotateHelper.leftRotate(parent);
+            } else {
+                RotateHelper.rightRotate(parent);
+            }
+            updateRoot(parent, brother);
+            brother.setRed(false);
+            parent.setRed(true);
+            adjustAfterDelete(node);
+            return;
+        }
+
+        RedBlackNode<V> lOfBrother = brother.getLeft();
+        RedBlackNode<V> rOfBrother = brother.getRight();
+        // c: 父节点，兄弟节点，兄弟的孩子节点都为黑色
+        if (!isRedNode(parent) && !isRedNode(brother) && !isRedNode(lOfBrother) && !isRedNode(rOfBrother)) {
+            brother.setRed(true);
+            adjustAfterDelete(parent);
+            return;
+        }
+
+        // d: 父节点是红色，其他节点是黑色
+        if (isRedNode(parent) && !isRedNode(brother) && !isRedNode(lOfBrother) && !isRedNode(rOfBrother)) {
+            parent.setRed(false);
+            brother.setRed(true);
+            return;
+        }
+
+        // e: 父节点颜色随意，兄弟节点为黑色，兄弟节点的内侧孩子为红色，外侧孩子为黑色（RL，LR）
+        if (!isRedNode(brother)) {
+            if (TreeHelper.isLeftChild(parent, node) && isRedNode(lOfBrother)) {
+                RotateHelper.rightRotate(brother);
+                lOfBrother.setRed(false);
+                brother.setRed(true);
+                adjustAfterDelete(node);
+                return;
+            } else if (TreeHelper.isRightChild(parent, node) && isRedNode(rOfBrother)) {
+                RotateHelper.leftRotate(brother);
+                rOfBrother.setRed(false);
+                brother.setRed(true);
+                adjustAfterDelete(node);
+                return;
+            }
+        }
+
+        // f: 父节点颜色随意，兄弟节点为黑色，兄弟节点的内侧孩子颜色随意，外侧孩子为红色
+        if (!isRedNode(brother)) {
+            if (TreeHelper.isLeftChild(parent, node) && isRedNode(rOfBrother)) {
+                RotateHelper.leftRotate(parent);
+                brother.setRed(parent.isRed());
+                parent.setRed(false);
+                rOfBrother.setRed(false);
+                updateRoot(parent, brother);
+            } else if (TreeHelper.isRightChild(parent, node) && isRedNode(lOfBrother)) {
+                RotateHelper.rightRotate(parent);
+                brother.setRed(parent.isRed());
+                parent.setRed(false);
+                lOfBrother.setRed(false);
+                updateRoot(parent, brother);
+            }
+        }
+    }
+
+    /**
+     * 旋转之后更新根节点
+     *
+     * @param oldNode
+     * @param newNode
+     */
+    private void updateRoot(RedBlackNode<V> oldNode, RedBlackNode<V> newNode) {
+        if (root == null) {
+            return;
+        }
+
+        if (root.equals(oldNode)) {
+            root = newNode;
+        }
     }
 
     /**
