@@ -109,24 +109,10 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
         } else {
             // 找到要删除的值了
             if (node.getLeft() == null || node.getRight() == null) {
-                // 有0个或者1个孩子
-                N parent = node.getParent();
-                N child = node.getLeft() != null ? node.getLeft() : node.getRight();
-                if (child != null) {
-                    child.setParent(parent);
-                }
-
-                // 更新父节点的子节点
-                if (node.equals(parent.getLeft())) {
-                    parent.setLeft(child);
-                } else {
-                    parent.setRight(child);
-                }
-
-                node = child;
+                deleteNodeWithoutTwoChild(node);
             } else {
                 // 有两个孩子
-                // 找到后继节点（右树中最小的那个）
+                // 找到后继节点
                 N successor = findSuccessor(node.getRight());
                 // 删除后继节点
                 deleteNode(node, successor.getValue());
@@ -136,6 +122,30 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
         }
 
         return node;
+    }
+
+    /**
+     * 删除只有一个子节点或者没有子节点的节点
+     *
+     * @param node
+     * @return
+     */
+    protected N deleteNodeWithoutTwoChild(N node) {
+        // 有0个或者1个孩子
+        N parent = node.getParent();
+        N child = node.getLeft() != null ? node.getLeft() : node.getRight();
+        if (child != null) {
+            child.setParent(parent);
+        }
+
+        // 更新父节点的子节点
+        if (TreeHelper.isLeftChild(parent, node)) {
+            parent.setLeft(child);
+        } else {
+            parent.setRight(child);
+        }
+
+        return child;
     }
 
     /**
@@ -159,7 +169,7 @@ public class BinarySearchTree<V extends Comparable<V>, N extends BaseBinaryNode<
      * @return
      */
     protected N findPredecessor(N node) {
-        if (node.getLeft() != null) {
+        if (node.getRight() != null) {
             return findPredecessor(node.getRight());
         }
 
