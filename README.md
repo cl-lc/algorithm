@@ -15,5 +15,5 @@ some data structure and algorithm
     * [quick sort](https://github.com/cl-lc/algorithm/blob/master/src/net/cllc/algorithm/sort/QuickSort.java)
     * heap sort
 
-* refs
-    * [Data Structure Visualizations](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
+## refs
+* [Data Structure Visualizations](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
