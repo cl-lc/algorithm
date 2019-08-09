@@ -30,7 +30,7 @@ public class BinarySearch {
      * @return
      */
     private static <T extends Comparable<T>> int find(List<T> values, T target, int left, int right) {
-        if (left == right - 1) {
+        if (left > right) {
             return -1;
         }
 
@@ -38,9 +38,9 @@ public class BinarySearch {
         T value = values.get(index);
         int compare = value.compareTo(target);
         if (compare < 0) {
-            return find(values, target, index, right);
+            return find(values, target, index + 1, right);
         } else if (compare > 0) {
-            return find(values, target, left, index);
+            return find(values, target, left, index - 1);
         } else {
             return index;
         }
