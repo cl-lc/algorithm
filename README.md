@@ -10,6 +10,8 @@ some data structure and algorithm
     * skip list
 
 ## algorithm
+* search
+    * [binary search](https://github.com/cl-lc/algorithm/blob/master/src/net/cllc/algorithm/search/BinarySearch.java)
 * sort
     * [merge sort](https://github.com/cl-lc/algorithm/blob/master/src/net/cllc/algorithm/sort/MergeSort.java)
     * [quick sort](https://github.com/cl-lc/algorithm/blob/master/src/net/cllc/algorithm/sort/QuickSort.java)
